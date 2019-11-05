@@ -5,10 +5,11 @@ import * as ACTIONS from './store/actions/actions'
 import * as Reducer1 from './store/reducers/plain_reducer'
 import * as AuthReducer from './store/reducers/auth_reducer'
 import * as FormReducer from './store/reducers/form_reducer'
+import * as PostsReducer from './store/reducers/posts_reducer'
 
 import Routes from './routes'
 
-import Auth from './auth'
+import Auth from './utils/auth'
 
 const auth = new Auth();
 
@@ -17,6 +18,7 @@ const ContextState = () => {
 
 
     const handleDispatchTrue = () => {
+        console.log("dispatch all the stuff")
         dispatchReducer1(ACTIONS.success())
     }
     const handleDispatchFalse = () => {
@@ -40,6 +42,16 @@ const ContextState = () => {
     const handleRemoveProfile = () => {
         dispatchAuthReducer(ACTIONS.remove_profile())
     }
+
+    const handleDBProfile = (profile) => {
+        dispatchAuthReducer(ACTIONS.set_db_profile(profile))
+    }
+
+    const handleRemoveDBProfile = () => {
+        dispatchAuthReducer(ACTIONS.remove_db_profile())
+    }
+
+
     
     const [stateFormReducer,dispatchFormReducer] = useReducer(FormReducer.FormReducer,FormReducer.initialState)
 
@@ -60,28 +72,53 @@ const ContextState = () => {
         }
     }
 
+    //Posts Reducer
+
+    const [statePostsReducer, dispatchPosts] = useReducer(PostsReducer.PostsReducer,PostsReducer.initialState)
+
+    const handleSetPosts = (posts) => {
+        dispatchPosts(ACTIONS.set_db_posts(posts))
+    }
+
+    const handleRemovePosts = () => {
+        dispatchPosts(ACTIONS.remove_db_posts())
+    }
 
     return(
         <div>
             <Context.Provider
             value={{
                 stateProp1: stateReducer1.stateprop1,
-                stateProp2: stateReducer1.stateprop2,
-                dispatchContentTrue: () => handleDispatchTrue(),
-                dispatchContentFalse: () => handleDispatchFalse(),
+                dispatchContextTrue: () => handleDispatchTrue(),
+                dispatchContextFalse: () => handleDispatchFalse(),
 
-                useContextChangeState: stateFormReducer.user_textChange,
-                useContextSubmitState: stateFormReducer.user_textSubmit,
-                useContextSubmit: (event) => handleFormSubmit(event),
-                useContextChange: (event) => handleFormChange(event),
-
+                //Auth Reducer
+                dbProfileState: stateAuthReducer.db_profile,
                 authState: stateAuthReducer.is_authenticated,
                 profileState: stateAuthReducer.profile,
+
+                handleAddDBProfile: (profile) => handleDBProfile(profile),
+                handleRemoveDBProfile: () => handleRemoveDBProfile(),
                 handleUserLogin: () => handleLogin(),
                 handleUserLogout: () => handleLogout,
                 handleUserAddProfile: (profile) => handleAddProfile(profile),
                 handleUserRemoveProfile: () => handleRemoveProfile(),
 
+
+                //Form Reducer
+                useContextChangeState: stateFormReducer.user_textChange,
+                useContextSubmitState: stateFormReducer.user_textSubmit,
+                useContextSubmit: (event) => handleFormSubmit(event),
+                useContextChange: (event) => handleFormChange(event),
+
+                
+
+                //Posts State
+                postsState: statePostsReducer.posts,
+                handleAddPosts: (posts) => handleSetPosts(posts),
+                handleRemovePosts: () => handleRemovePosts(),
+
+                //Handle Auth
                 handleAuth: (props) => handleAuthentication(props),
                 authObj: auth
 

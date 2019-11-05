@@ -3,6 +3,7 @@ import { stat } from 'fs'
 
 export const initialState = {
     is_authenticated: false,
+    db_profile: null,
     profile: null
 }
 
@@ -28,6 +29,17 @@ export const AuthReducer = (state = initialState, action) => {
                 ...state,
                 profile:null
             }
+            
+        case ACTION_TYPES.SET_DB_PROFILE:
+            return {
+                ...state,
+                db_profile: action.payload
+            }
+        case ACTION_TYPES.REMOVE_DB_PROFILE:
+                return {
+                    ...state,
+                    db_profile: null
+                }
         default:
             return state
     }

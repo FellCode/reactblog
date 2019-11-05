@@ -13,7 +13,7 @@ export const Reducer1 = (state = initialState, action) => {
                 stateprop1:true,
                 stateprop2:true
             }
-        case ACTION_TYPES.FAULIRE:
+        case ACTION_TYPES.FAILURE:
                 return {
                     ...state,
                     stateprop1:false,
